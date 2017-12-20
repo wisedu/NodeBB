@@ -1,0 +1,30 @@
+{
+    "name": "nodebb-plugin-nesnwl",
+    "version": "1.0.0",
+    "description": "notication external system NodeBB was loggedIn",
+    "main": "library.js",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/wisedu/nodebb-plugin-nesnwl"
+    },
+    "keywords": [
+      "nodebb",
+      "plugin",
+      "login",
+      "external"
+    ],
+    "author": {
+      "name": "elvisqi",
+      "email": "yuqi@wisedu.com"
+    },
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/wisedu/nodebb-plugin-nesnwl/issues"
+    },
+    "readme": "",
+    "readmeFilename": "README.md",
+    "nbbpm": {
+      "compatibility": "^1.0.1",
+      "index": false
+    }
+  }

@@ -1,0 +1,11 @@
+{
+    "id": "nodebb-plugin-nesnwl", 
+    "name": "nesnwl", 
+    "description": "notication external system NodeBB was loggedIn",  
+    "url": "http://res.wisedu.com",
+    "library": "./library.js",
+    "hooks": [   
+        { "hook": "action:user.loggedIn", "method": "loggedIn" },
+        { "hook": "static:user.loggedOut", "method": "loggedOut" }
+    ]
+}

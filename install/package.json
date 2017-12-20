@@ -73,6 +73,7 @@
       "nodebb-theme-slick": "1.1.2",
       "nodebb-theme-vanilla": "8.1.4",
       "nodebb-widget-essentials": "4.0.1",
+      "nodebb-plugin-nesnwl": "file:./plugins/nodebb-plugin-nesnwl",
       "nodemailer": "4.4.0",
       "passport": "^0.4.0",
       "passport-local": "1.0.0",
