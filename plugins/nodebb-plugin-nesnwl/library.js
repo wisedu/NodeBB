@@ -14,6 +14,7 @@ var plugin = {};
 plugin.loggedIn = function(uids) {
 	// console.log("uid:" + uids.uid)
 	async.parallel({
+		user: async.apply(user.getUserData, uids.uid),
 		designer: async.apply(Groups.isMember, uids.uid, "designer"),
 		developer: async.apply(Groups.isMember, uids.uid, "developer"),
 		demander: async.apply(Groups.isMember, uids.uid, "demander"),
@@ -22,7 +23,7 @@ plugin.loggedIn = function(uids) {
 		dem_data: async.apply(Groups.getGroupFields, "demander", ["res_id"]),
 	}, function(p1, data){
 		// console.log(uids.uid)
-		console.log(data)
+		// console.log(data)
 		let group = []
 		if (data.designer === true){
 			group.push({name:"designer", id:data.des_data.res_id})
@@ -33,11 +34,12 @@ plugin.loggedIn = function(uids) {
 		if (data.demander === true){
 			group.push({name:"demander", id:data.dem_data.res_id})
 		}
+		let uname = data.user.fullname || data.user.username;
 
 		mongocli.connect(dburl, function (err, db)	{
 			db.collection("sessions").find({uid:uids.uid,online:true}).toArray(function(err, isExists){
 				if (isExists.length === 0) {
-					db.collection("sessions").insertOne({uid:uids.uid, group:group, online:true, created:new Date()}, function(){
+					db.collection("sessions").insertOne({uid:uids.uid, uname:uname ,group:group, online:true, created:new Date()}, function(){
 						db.close();
 					});
 				} else {
