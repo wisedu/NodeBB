@@ -12,28 +12,17 @@ var dburl = 'mongodb://172.16.7.75:27017/resshare-session';
 var plugin = {};
 
 plugin.loggedIn = function(uids) {
-	// console.log("uid:" + uids.uid)
 	async.parallel({
 		user: async.apply(user.getUserData, uids.uid),
-		designer: async.apply(Groups.isMember, uids.uid, "designer"),
-		developer: async.apply(Groups.isMember, uids.uid, "developer"),
-		demander: async.apply(Groups.isMember, uids.uid, "demander"),
-		des_data: async.apply(Groups.getGroupFields, "designer", ["res_id"]),
-		dev_data: async.apply(Groups.getGroupFields, "developer", ["res_id"]),
-		dem_data: async.apply(Groups.getGroupFields, "demander", ["res_id"]),
+		group: async.apply(Groups.getUserGroups, [uids.uid])
 	}, function(p1, data){
-		// console.log(uids.uid)
-		// console.log(data)
-		let group = []
-		if (data.designer === true){
-			group.push({name:"designer", id:data.des_data.res_id})
-		}
-		if (data.developer === true){
-			group.push({name:"developer", id:data.dev_data.res_id})
-		}
-		if (data.demander === true){
-			group.push({name:"demander", id:data.dem_data.res_id})
-		}
+		let group = data.group[0].map(g => {
+			return {
+				name:g.name,
+				id:g.res_id,
+				description:g.description
+			}
+		})
 		let uname = data.user.fullname || data.user.username;
 
 		mongocli.connect(dburl, function (err, db)	{
