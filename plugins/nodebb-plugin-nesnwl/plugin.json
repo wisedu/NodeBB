@@ -5,7 +5,16 @@
     "url": "http://res.wisedu.com",
     "library": "./library.js",
     "hooks": [
+        { "hook": "action:group.grantOwnership", "method": "grantOwnership" },
+        { "hook": "action:group.rescindOwnership", "method": "rescindOwnership" },
+        { "hook": "action:group.join", "method": "groupJoin" },
+        { "hook": "action:group.leave", "method": "groupLeave" },
         { "hook": "filter:group.create", "method": "groupCreate" },
+        { "hook": "action:group.rename", "method": "groupRename" },
+        { "hook": "action:group.destroy", "method": "groupDestroy" },
+        { "hook": "action:user.create", "method": "userCreate" },
+        { "hook": "static:user.delete", "method": "userDelete" },
+        { "hook": "action:user.updateProfile", "method": "userUpdateProfile" },
         { "hook": "action:user.loggedIn", "method": "loggedIn" },
         { "hook": "static:user.loggedOut", "method": "loggedOut" }
     ]
