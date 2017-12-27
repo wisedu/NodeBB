@@ -157,11 +157,11 @@ plugin.userDelete = function(data, callback) {
 plugin.userUpdateProfile = function(data, callback) {
 	console.log("-userUpdateProfile-")
 	console.log(data.uid)
-	console.log(data.data)
+	console.log(data.data.fullname)
 	if (data.data.fullname !== undefined && data.data.fullname !== "") {
 		let user = {
-			uid:data.user.uid,
-			username:data.user.fullname
+			uid:data.uid,
+			username:data.data.fullname
 		}
 		doPost("/userUpdateProfile",user);
 	}
