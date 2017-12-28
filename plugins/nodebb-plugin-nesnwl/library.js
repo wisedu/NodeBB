@@ -1,9 +1,9 @@
 'use strict';
 var nconf = require('nconf');
 var user = module.parent.require('./user'),
-  Groups = module.parent.require('./groups'),
-  meta = module.parent.require('./meta'),
-  async = module.parent.require('async');
+	Groups = module.parent.require('./groups'),
+	meta = module.parent.require('./meta'),
+	async = module.parent.require('async');
 var mongocli = require('mongodb').MongoClient;
 // var db = module.parent.require('./database');
 var request = require('request');
@@ -81,9 +81,11 @@ plugin.groupCreate = function(data, callback) {
 	console.log("-groupCreate-")
 	console.log(data.group.res_id)
 	console.log(data.group.name)
+	console.log(data)
 	let group = {
 		id: data.group.res_id,
-		name: data.group.name
+		name: data.group.name,
+		ownerUid: data.data.ownerUid
 	}
 	doPost("/groupCreate",group);
 	callback(null, data)
@@ -117,8 +119,9 @@ plugin.groupLeave = function(data, callback) {
 	console.log("-groupLeave-")
 	console.log(data.uid)
 	console.log(data.groupName)
-	console.log(doPost)
-	doPost("/groupLeave",data);
+	if (data.groupName !== "registered-users") {
+		doPost("/groupLeave",data);
+	}
 };
 
 plugin.groupRename = function(data, callback) {
