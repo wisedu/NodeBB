@@ -244,6 +244,9 @@ function continueLogin(req, res, next) {
 			req.session.cookie.expires = false;
 		}
 
+		//qiyu TODO
+		res.cookie('uid', userData.uid);
+
 		if (passwordExpiry && passwordExpiry < Date.now()) {
 			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
 			req.session.passwordExpired = true;

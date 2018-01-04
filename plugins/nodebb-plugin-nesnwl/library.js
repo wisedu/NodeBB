@@ -64,6 +64,7 @@ plugin.loggedIn = function(uids) {
 };
 
 plugin.loggedOut = function(data, callback) {
+	data.res.clearCookie("uid");
 	mongocli.connect(dburl, function (err, db)	{
 		db.collection("sessions").update({uid:data.uid,online:true},{$set:{online:false, logout:new Date()}}, function(){
 			db.close();
