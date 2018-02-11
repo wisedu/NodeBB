@@ -4,9 +4,9 @@ node_modules/
 sftp-config.json
 config.json
 jsconfig.json
-public/src/nodebb.min.js
+/public/src/nodebb.min.js
 !src/views/config.json
-public/css/*.css
+/public/css/*.css
 *.sublime-project
 *.sublime-workspace
 .project
