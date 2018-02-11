@@ -438,7 +438,8 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-soundpack-default',
 		'nodebb-plugin-emoji',
 		'nodebb-plugin-emoji-android',
-		'nodebb-plugin-nesnwl'
+		'nodebb-plugin-nesnwl',
+		'nodebb-plugin-blog-comments2-wisedu'
 	];
 	var customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
 
