@@ -173,14 +173,16 @@ plugin.userUpdateProfile = function(data, callback) {
 
 plugin.notifyMessage = function(post) {
 	console.log(post)
+	var content = post.post.content;
+	var tid = post.post.tid;
 	var ddurl = "https://oapi.dingtalk.com/robot/send?access_token=091991362d098eae33b50c44748019c2510ab4e742c168dbabee5b2171d18e3d";
 	var requestData = {
 		"msgtype": "link",
 		"link": {
-			"title": "亲，论坛中有人发帖了，你就看一下吧",
-			"text": "",
+			"title": "亲，论坛中有人发帖了，你就看一下吧~",
+			"text": content,
 			"picUrl": "",
-			"messageUrl": "https://res.wisedu.com/forum/topic/63/mobile-ceils"
+			"messageUrl": "https://res.wisedu.com/forum/topic/" + tid
 		}
 	};
 
@@ -193,7 +195,9 @@ plugin.notifyMessage = function(post) {
 		},
 		body: JSON.stringify(requestData)
 	}, function(error, response, body) {
+		console.log(error)
 		if (!error && response.statusCode == 200) {
+			console.log(body)
 		}
 	});
 }
