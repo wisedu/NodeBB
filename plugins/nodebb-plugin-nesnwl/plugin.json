@@ -16,6 +16,7 @@
         { "hook": "static:user.delete", "method": "userDelete" },
         { "hook": "action:user.updateProfile", "method": "userUpdateProfile" },
         { "hook": "action:user.loggedIn", "method": "loggedIn" },
-        { "hook": "static:user.loggedOut", "method": "loggedOut" }
+        { "hook": "static:user.loggedOut", "method": "loggedOut" },
+        { "hook": "action:post.save", "method":"notifyMessage" }
     ]
 }

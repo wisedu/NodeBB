@@ -171,4 +171,32 @@ plugin.userUpdateProfile = function(data, callback) {
 	}
 };
 
+plugin.notifyMessage = function(post) {
+	console.log(post)
+	var ddurl = "https://oapi.dingtalk.com/robot/send?access_token=091991362d098eae33b50c44748019c2510ab4e742c168dbabee5b2171d18e3d";
+	var requestData = {
+		"msgtype": "link",
+		"link": {
+			"title": "亲，论坛中有人发帖了，你就看一下吧",
+			"text": "",
+			"picUrl": "",
+			"messageUrl": "https://res.wisedu.com/forum/topic/63/mobile-ceils"
+		}
+	};
+
+	request({
+		url: ddurl,
+		method: "POST",
+		json: true,
+		headers: {
+			"content-type": "application/json",
+		},
+		body: JSON.stringify(requestData)
+	}, function(error, response, body) {
+		if (!error && response.statusCode == 200) {
+		}
+	});
+}
+
+
 module.exports = plugin;
