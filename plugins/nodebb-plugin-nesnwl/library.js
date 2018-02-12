@@ -193,7 +193,7 @@ plugin.notifyMessage = function(post) {
 		headers: {
 			"content-type": "application/json",
 		},
-		body: JSON.stringify(requestData)
+		body: requestData
 	}, function(error, response, body) {
 		console.log(error)
 		if (!error && response.statusCode == 200) {
