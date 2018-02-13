@@ -241,7 +241,7 @@ Flags.validate = function (payload, callback) {
 					return callback(err);
 				}
 
-				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 0;
+				var minimumReputation = utils.isNumber(meta.config['min:rep:flag']) ? parseInt(meta.config['min:rep:flag'], 10) : 0;
 				// Check if reporter meets rep threshold (or can edit the target post, in which case threshold does not apply)
 				if (!editable.flag && parseInt(data.reporter.reputation, 10) < minimumReputation) {
 					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
@@ -257,7 +257,7 @@ Flags.validate = function (payload, callback) {
 					return callback(err);
 				}
 
-				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 0;
+				var minimumReputation = utils.isNumber(meta.config['min:rep:flag']) ? parseInt(meta.config['min:rep:flag'], 10) : 0;
 				// Check if reporter meets rep threshold (or can edit the target user, in which case threshold does not apply)
 				if (!editable && parseInt(data.reporter.reputation, 10) < minimumReputation) {
 					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
@@ -387,7 +387,7 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 				tasks.push(async.apply(Flags.update, flagId, uid, { state: 'open' }));
 			}
 
-			async.parallel(tasks, function (err) {
+			async.series(tasks, function (err) {
 				next(err, flagId);
 			});
 		},
@@ -645,10 +645,18 @@ Flags.notify = function (flagObj, uid, callback) {
 			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
 			globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
 			moderators: function (next) {
+				var cid;
 				async.waterfall([
 					async.apply(posts.getCidByPid, flagObj.targetId),
-					function (cid, next) {
-						groups.getMembers('cid:' + cid + ':privileges:moderate', 0, -1, next);
+					function (_cid, next) {
+						cid = _cid;
+						groups.getMembers('cid:' + cid + ':privileges:groups:moderate', 0, -1, next);
+					},
+					function (moderatorGroups, next) {
+						groups.getMembersOfGroups(moderatorGroups.concat(['cid:' + cid + ':privileges:moderate']), next);
+					},
+					function (members, next) {
+						next(null, _.flatten(members));
 					},
 				], next);
 			},

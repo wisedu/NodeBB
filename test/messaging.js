@@ -177,7 +177,48 @@ describe('Messaging Library', function () {
 				Messaging.isUserInRoom(bazUid, roomId, function (err, isUserInRoom) {
 					assert.ifError(err);
 					assert.equal(isUserInRoom, false);
-					done();
+					Messaging.getRoomData(roomId, function (err, data) {
+						assert.ifError(err);
+						assert.equal(data.owner, fooUid);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should change owner when owner leaves room', function (done) {
+			socketModules.chats.newRoom({ uid: herpUid }, { touid: fooUid }, function (err, roomId) {
+				assert.ifError(err);
+				socketModules.chats.addUserToRoom({ uid: herpUid }, { roomId: roomId, username: 'baz' }, function (err) {
+					assert.ifError(err);
+					socketModules.chats.leave({ uid: herpUid }, roomId, function (err) {
+						assert.ifError(err);
+						Messaging.getRoomData(roomId, function (err, data) {
+							assert.ifError(err);
+							assert.equal(data.owner, fooUid);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should change owner if owner is deleted', function (done) {
+			User.create({ username: 'deleted_chat_user' }, function (err, sender) {
+				assert.ifError(err);
+				User.create({ username: 'receiver' }, function (err, receiver) {
+					assert.ifError(err);
+					socketModules.chats.newRoom({ uid: sender }, { touid: receiver }, function (err, roomId) {
+						assert.ifError(err);
+						User.deleteAccount(sender, function (err) {
+							assert.ifError(err);
+							Messaging.getRoomData(roomId, function (err, data) {
+								assert.ifError(err);
+								assert.equal(data.owner, receiver);
+								done();
+							});
+						});
+					});
 				});
 			});
 		});
@@ -414,7 +455,7 @@ describe('Messaging Library', function () {
 
 		it('should fail to load room if user is not in', function (done) {
 			socketModules.chats.loadRoom({ uid: 0 }, { roomId: roomId }, function (err) {
-				assert.equal(err.message, '[[error:not-allowed]]');
+				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
@@ -579,11 +620,12 @@ describe('Messaging Library', function () {
 			});
 		});
 
-		it('should 404 for guest', function (done) {
+		it('should 500 for guest with no privilege error', function (done) {
 			meta.config.disableChat = 0;
-			request(nconf.get('url') + '/user/baz/chats', function (err, response) {
+			request(nconf.get('url') + '/api/user/baz/chats', { json: true }, function (err, response, body) {
 				assert.ifError(err);
-				assert.equal(response.statusCode, 404);
+				assert.equal(response.statusCode, 500);
+				assert.equal(body.error, '[[error:no-privileges]]');
 				done();
 			});
 		});

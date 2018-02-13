@@ -30,11 +30,10 @@ function updatePackageFile() {
 exports.updatePackageFile = updatePackageFile;
 
 function installAll() {
-	process.stdout.write('\n');
-
 	var prod = global.env !== 'development';
 	var command = 'npm install';
 	try {
+		fs.accessSync(path.join(modulesPath, 'nconf/package.json'), fs.constants.R_OK);
 		var packageManager = require('nconf').get('package_manager');
 		if (packageManager === 'yarn') {
 			command = 'yarn';
