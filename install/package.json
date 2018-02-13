@@ -99,7 +99,9 @@
         "winston": "^2.4.0",
         "xml": "^1.0.1",
         "xregexp": "3.2.0",
-        "zxcvbn": "^4.4.2"
+        "zxcvbn": "^4.4.2",
+        "nodebb-plugin-nesnwl": "file:./plugins/nodebb-plugin-nesnwl",
+        "nodebb-plugin-blog-comments2-wisedu": "file:./plugins/nodebb-plugin-blog-comments2-wisedu"
     },
     "devDependencies": {
         "coveralls": "^3.0.0",
