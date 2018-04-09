@@ -67,7 +67,7 @@
                     });
                 };
 
-                DD.getEmailByDDID(ddId, function(err, _email) {
+                DD.getEmailByDDID(ddID, function(err, _email) {
                     if (!_email) {
                         User.getUidByEmail(email, function(err, uid) {
                             if (!uid) {
