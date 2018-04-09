@@ -1,0 +1,30 @@
+{
+  "name": "nodebb-plugin-sso-dd",
+  "version": "0.1.0",
+  "description": "NodeBB Plugin that allows users to login/register via their dd account.",
+  "main": "library.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pmmsc/nodebb-plugin-sso-dd"
+  },
+  "keywords": [
+    "nodebb",
+    "plugin",
+    "dd",
+    "sso",
+    "single sign on",
+    "registration"
+  ],
+  "author": {
+    "name": "pmmsc",
+    "email": "yanni_wen@pmmsc.org"
+  },
+  "contributors": [
+    {
+      "name": "Eric Miao",
+      "email": "qjmiao@gmail.com",
+      "url": "https://github.com/qjmiao/nodebb-plugin-sso-dd"
+    }
+  ],
+  "license": "BSD-2-Clause"
+}
