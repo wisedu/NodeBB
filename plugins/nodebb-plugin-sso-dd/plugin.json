@@ -4,6 +4,8 @@
     "description": "NodeBB Plugin that allows users to login/register via their dd account.",
     "url": "https://github.com/pmmsc/nodebb-plugin-sso-dd",
     "library": "./library.js",
+    "modules": {
+    },
     "hooks": [
         {
             "hook": "filter:auth.init", "method": "getStrategy"
@@ -15,6 +17,12 @@
             "hook": "static:app.load", "method": "init"
         }
     ],
-    "templates": "./templates"
-
+    "templates": "./templates",
+    "staticDirs": {
+        "templates": "./templates",
+        "lib": "./public/lib"
+    },
+    "scripts":[
+        "./public/lib/sso-dd.js"
+    ]
 }

@@ -4,8 +4,8 @@
             <div class="panel-heading"><i class="fa fa-qq"></i>dd Social Authentication</div>
             <div class="panel-body">
                 <p>
-                       Register a new <strong>dd Application</strong> via <a href="http://www.qq.com/">qq.com</a> and then paste
-                       your application details here. Your callback URL is yourdomain.com/auth/qq/callback
+                       Register a new <strong>dd Application</strong> via <a href="http://www.dingtalk.com/">dingtalk.com</a> and then paste
+                       your application details here. Your callback URL is yourdomain.com/auth/dingtalk/callback
                 </p>
                 <br />
                 <form class="sso-qq">

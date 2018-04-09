@@ -5,7 +5,7 @@ var util = require('util');
 var qs = require('qs');
 var OAuth2Strategy = require('passport-oauth').OAuth2Strategy;
 var InternalOAuthError = require('passport-oauth').InternalOAuthError;
-
+var axios = require('axios');
 /*
  * @param {Object} options
  * @param {Function} verify
@@ -15,26 +15,27 @@ function Strategy(options, verify) {
     let appid = options.clientID;
     let appsecret = options.clientSecret
     options = options || {};
-    options.authorizationURL = options.authorizationURL || 'https://oapi.dingtalk.com/sns/gettoken';
+    var authorizationURL = options.authorizationURL || 'https://oapi.dingtalk.com/sns/gettoken';
+    options.authorizationURL = authorizationURL;
     options.tokenURL = options.tokenURL || 'https://oapi.dingtalk.com/sns/gettoken';
     options.clientID = appid;
     options.clientSecret = appsecret;
     options.scopeSeparator = options.scopeSeparator || ',';
     let persistentURL = options.persistentURL || 'https://oapi.dingtalk.com/sns/get_persistent_code';
-    let snsToken = options.persistentURL || 'https://oapi.dingtalk.com/sns/get_sns_token';
+    let snsTokenURL = options.persistentURL || 'https://oapi.dingtalk.com/sns/get_sns_token';
 
 
     OAuth2Strategy.call(this, options, verify);
     this.name = 'dingtalk';
 
-    this._oauth2.getAuthorizeUrl = function(params) {
+    var getAuthorizeUrl = function(params) {
         var params = params || {};
         //params['appid'] = this._clientId;
         var options = {
             appid: appid,
             appsecret: appsecret
         }
-        return this._authorizeUrl + "?" + qs.stringify(options);
+        return authorizationURL + "?" + qs.stringify(options);
     }
 
     this._oauth2.getOAuthAccessToken = function(code, params, callback) {
@@ -48,44 +49,32 @@ function Strategy(options, verify) {
         };
         var self = this;
         //1、获取access_token
-        this._request("GET", this._getAccessTokenUrl(), post_headers, null, null, function(error, data, response) {
+        console.log(`0、code，${code}`)
+        console.log(`1、获取access_token，${getAuthorizeUrl()}`)
+        this._request("GET", getAuthorizeUrl(), post_headers, null, null, function(error, data, response) {
             if (error) callback(error);
             else {
                 let results;
                 try {
-                    // As of http://tools.ietf.org/html/draft-ietf-oauth-v2-07
-                    // responses should be in JSON
                     results = JSON.parse(data);
                 } catch (e) {
-                    // .... However both Facebook + Github currently use rev05 of the spec
-                    // and neither seem to specify a content-type correctly in their response headers :(
-                    // clients of these services will suffer a *minor* performance cost of the exception
-                    // being thrown
+
                     results = qs.parse(data);
                 }
                 let access_token = results["access_token"];
+                console.log(`2、获取persistent_code，${persistentURL}?access_token=${access_token}`)
                 //2、获取persistent_code
-                self._request("POST", persistentURL, post_headers, { code: code }, access_token, function(error, data, response) {
-                    if (error) callback(error);
-                    let results;
-                    try {
-                        results = JSON.parse(data);
-                    } catch (e) {
-                        results = qs.parse(data);
-                    }
+                axios.post(`${persistentURL}?access_token=${access_token}`, { tmp_auth_code: code }).then(function({ data }) {
+                    let results = data;
                     //3、获取sns_token
-                    self._request('POST', snsToken, post_headers, {
+                    console.log(`3、获取sns_token，${JSON.stringify(results)}`)
+                    axios.post(`${snsTokenURL}?access_token=${access_token}`, {
                         persistent_code: results.persistent_code,
                         access_token: access_token,
                         openid: results.openid
-                    }, access_token, function(error, data, response) {
-                        if (error) callback(error);
-                        let results;
-                        try {
-                            results = JSON.parse(data);
-                        } catch (e) {
-                            results = qs.parse(data);
-                        }
+                    }).then(function({ data }) {
+                        let results = data;
+                        console.log(`3、获取sns_token结果，${JSON.stringify(results)}`)
                         let sns_token = results.sns_token;
                         callback(null, sns_token, null, results); // callback results =-=
                     });
@@ -109,16 +98,18 @@ OAuth2Strategy.prototype._loadUserProfile = function(sns_token, done, params) {
 Strategy.prototype.userProfile = function(sns_token, done, params) {
     var _self = this;
     //4、获取用户信息
+    console.log(`4、获取用户信息`)
     this._oauth2.get('https://oapi.dingtalk.com/sns/getuserinfo?sns_token=' + sns_token, null, function(err, body, res) {
         try {
             var json = JSON.parse(body);
             var info = json.user_info;
+            console.log(`4、获取用户信息，${body}`)
             done(null, {
                 provider: 'dingtalk',
-                id: info.openid,
+                id: info.unionid,
                 name: info.nick,
                 mobile: info.maskedMobile,
-                unionId: info.unionid,
+                openId: info.unionid,
                 dingId: info.dingId,
                 _raw: body,
                 _json: json

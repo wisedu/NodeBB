@@ -445,7 +445,8 @@ function enableDefaultPlugins(next) {
 		'nodebb-plugin-emoji',
 		'nodebb-plugin-emoji-android',
 		'nodebb-plugin-nesnwl',
-		'nodebb-plugin-blog-comments2-wisedu'
+		'nodebb-plugin-blog-comments2-wisedu',
+		'nodebb-plugin-sso-dd'
 	];
 	var customDefaults = nconf.get('defaultplugins') || nconf.get('defaultPlugins');
 
