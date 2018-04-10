@@ -19,6 +19,7 @@
     "dependencies": {
         "ace-builds": "^1.2.9",
         "async": "2.6.0",
+        "axios": "^0.16.1",
         "autoprefixer": "7.2.4",
         "bcryptjs": "2.4.3",
         "benchpressjs": "^1.2.1",
@@ -102,6 +103,7 @@
         "spider-detector": "1.0.18",
         "toobusy-js": "^0.5.1",
         "uglify-es": "^3.3.9",
+        "uglify-js": "^3.1.5",
         "validator": "9.2.0",
         "winston": "^2.4.0",
         "xml": "^1.0.1",
