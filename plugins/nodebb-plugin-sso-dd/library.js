@@ -54,6 +54,7 @@
             console.log('uid', uid);
             if (uid) {
                 // Existing User
+                console.log('Existing User');
                 callback(null, {
                     uid: uid
                 });
