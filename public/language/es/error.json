@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "No tienes permiso para eliminar este mensaje",
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Ya has votado a este mensaje.",
     "reputation-system-disabled": "El sistema de reputación está deshabilitado.",
     "downvoting-disabled": "La votación negativa está deshabilitada.",
@@ -132,6 +134,7 @@
     "wrong-login-type-email": "Por favor emplea tu email para acceder",
     "wrong-login-type-username": "Por favor introduce tu nombre de usuario para acceder",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Has alcanzado el número máximo de personas invitadas (%1 de %2).",
     "no-session-found": "¡No se ha encontrado ningún inicio de sesión!",
     "not-in-room": "El usuario no está en la sala",
@@ -141,5 +144,6 @@
     "invalid-home-page-route": "Ruta de página de inicio invalida",
     "invalid-session": "No concuerdan los datos de sesión",
     "invalid-session-text": "Parece que su sesión ha expirado o no concuerda con el servidor. Por favor vuelva a cargar la página.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

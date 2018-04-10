@@ -387,7 +387,7 @@
 		},
 
 		isEmailValid: function (email) {
-			return typeof email === 'string' && email.length && email.indexOf('@') !== -1;
+			return typeof email === 'string' && email.length && email.indexOf('@') !== -1 && email.indexOf(',') === -1 && email.indexOf(';') === -1;
 		},
 
 		isUserNameValid: function (name) {
@@ -551,20 +551,6 @@
 			}
 
 			return str.toString().replace(escapeChars, replaceChar);
-		},
-
-		addNoReferrer: function (containerEl) {
-			containerEl.find('a').attr('rel', function (idx, value) {
-				value = value ? value.split(' ') : [];
-
-				['noopener', 'noreferrer'].forEach(function (property) {
-					if (value.indexOf(property) === -1) {
-						value.push(property);
-					}
-				});
-
-				return value.join(' ');
-			});
 		},
 
 		isAndroidBrowser: function () {

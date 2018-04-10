@@ -1,5 +1,6 @@
 'use strict';
 
+var os = require('os');
 var async = require('async');
 var nconf = require('nconf');
 var winston = require('winston');
@@ -26,7 +27,7 @@ Sockets.init = function (server) {
 		path: nconf.get('relative_path') + '/socket.io',
 	});
 
-	addRedisAdapter(io);
+	io.adapter(nconf.get('redis') ? require('../database/redis').socketAdapter() : db.socketAdapter());
 
 	io.use(socketioWildcard);
 	io.use(authorize);
@@ -84,6 +85,7 @@ function onConnect(socket) {
 
 	socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
 	io.sockets.sockets[socket.id].emit('checkSession', socket.uid);
+	io.sockets.sockets[socket.id].emit('setHostname', os.hostname());
 }
 
 function onMessage(socket, payload) {
@@ -210,22 +212,6 @@ function authorize(socket, callback) {
 			});
 		},
 	], callback);
-}
-
-function addRedisAdapter(io) {
-	if (nconf.get('redis')) {
-		var redisAdapter = require('socket.io-redis');
-		var redis = require('../database/redis');
-		var pub = redis.connect();
-		var sub = redis.connect();
-		io.adapter(redisAdapter({
-			key: 'db:' + nconf.get('redis:database') + ':adapter_key',
-			pubClient: pub,
-			subClient: sub,
-		}));
-	} else if (nconf.get('isCluster') === 'true') {
-		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
-	}
 }
 
 Sockets.in = function (room) {

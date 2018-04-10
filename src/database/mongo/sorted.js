@@ -203,25 +203,36 @@ module.exports = function (db, module) {
 	};
 
 	module.sortedSetRank = function (key, value, callback) {
-		getSortedSetRank(module.getSortedSetRange, key, value, callback);
+		getSortedSetRank(false, key, value, callback);
 	};
 
 	module.sortedSetRevRank = function (key, value, callback) {
-		getSortedSetRank(module.getSortedSetRevRange, key, value, callback);
+		getSortedSetRank(true, key, value, callback);
 	};
 
-	function getSortedSetRank(method, key, value, callback) {
+	function getSortedSetRank(reverse, key, value, callback) {
 		if (!key) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		method(key, 0, -1, function (err, result) {
-			if (err) {
-				return callback(err);
+		module.sortedSetScore(key, value, function (err, score) {
+			if (err || score === null) {
+				return callback(err, null);
 			}
 
-			var rank = result.indexOf(value);
-			callback(null, rank !== -1 ? rank : null);
+			db.collection('objects').count({
+				$or: [
+					{
+						_key: key,
+						score: reverse ? { $gt: score } : { $lt: score },
+					},
+					{
+						_key: key,
+						score: score,
+						value: reverse ? { $gt: value } : { $lt: value },
+					},
+				],
+			}, function (err, rank) { callback(err, rank); });
 		});
 	}
 
@@ -235,7 +246,7 @@ module.exports = function (db, module) {
 		}
 
 		async.map(data, function (item, next) {
-			getSortedSetRank(module.getSortedSetRange, item.key, item.value, next);
+			getSortedSetRank(false, item.key, item.value, next);
 		}, callback);
 	};
 
@@ -373,7 +384,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0, _key: 1, value: 1 }).toArray(function (err, data) {
+		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0, _key: 1, value: 1 }).sort({ score: 1 }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}

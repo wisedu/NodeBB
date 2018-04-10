@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "Du har inte rättigheter att radera det här meddelandet",
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Du har redan röstat på det här inlägget.",
     "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
     "downvoting-disabled": "Nedröstning är inaktiverat",
@@ -132,6 +134,7 @@
     "wrong-login-type-email": "Använd din e-postadress för att logga in",
     "wrong-login-type-username": "Använd ditt användarnamn för att logga in",
     "sso-registration-disabled": "Registration has been disabled for %1 accounts, please register with an email address first",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Du har bjudit in det maximala antalet användare (%1 av %2)",
     "no-session-found": "Ingen login-session hittades!",
     "not-in-room": "Användaren finns inte i rummet",
@@ -141,5 +144,6 @@
     "invalid-home-page-route": "Ogiltig sidsökväg",
     "invalid-session": "Session fel",
     "invalid-session-text": "Det ser ut som din inloggningssession inte längre är aktiv eller inte längre överensstämmer med servern. Uppdatera denna sida.",
-    "no-topics-selected": "No topics selected!"
+    "no-topics-selected": "No topics selected!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

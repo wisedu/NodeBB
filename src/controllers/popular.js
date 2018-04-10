@@ -37,9 +37,9 @@ popularController.get = function (req, res, next) {
 		alltime: '[[global:header.popular]]',
 	};
 
-	if (!req.uid) {
-		if (anonCache[term] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
-			return res.render('popular', anonCache[term]);
+	if (!req.loggedIn) {
+		if (anonCache[term] && anonCache[term][page] && (Date.now() - lastUpdateTime) < 60 * 60 * 1000) {
+			return res.render('popular', anonCache[term][page]);
 		}
 	}
 	var settings;
@@ -73,8 +73,9 @@ popularController.get = function (req, res, next) {
 				data.breadcrumbs = helpers.buildBreadcrumbs(breadcrumbs);
 			}
 
-			if (!req.uid) {
-				anonCache[term] = data;
+			if (!req.loggedIn) {
+				anonCache[term] = anonCache[term] || {};
+				anonCache[term][page] = data;
 				lastUpdateTime = Date.now();
 			}
 

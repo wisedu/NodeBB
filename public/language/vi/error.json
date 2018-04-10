@@ -116,6 +116,8 @@
     "cant-delete-chat-message": "Bạn không được phép xoá tin nhắn này",
     "chat-edit-duration-expired": "You are only allowed to edit chat messages for %1 second(s) after posting",
     "chat-delete-duration-expired": "You are only allowed to delete chat messages for %1 second(s) after posting",
+    "chat-deleted-already": "This chat message has already been deleted.",
+    "chat-restored'already": "This chat message has already been restored.",
     "already-voting-for-this-post": "Bạn đã bỏ phiếu cho bài viết này",
     "reputation-system-disabled": "Hệ thống tín nhiệm đã bị vô hiệu hóa.",
     "downvoting-disabled": "Downvote đã bị tắt",
@@ -132,6 +134,7 @@
     "wrong-login-type-email": "Xin vui lòng sửa dụng email của bạn để đăng nhập",
     "wrong-login-type-username": "Vui lòng sử dụng tên đăng nhập của bạn để đăng nhập",
     "sso-registration-disabled": "Không thể đăng ký với tài khoản %1, vui lòng đăng ký với địa chỉ email của bạn",
+    "sso-multiple-association": "You cannot associate multiple accounts from this service to your NodeBB account. Please dissociate your existing account and try again.",
     "invite-maximum-met": "Bạn đã sử dụng hết số lượng lời mời bạn có thể gửi (%1 đã gửi trên tổng số %2 được cho phép)",
     "no-session-found": "Không tìm thấy phiên đăng nhập!",
     "not-in-room": "Thành viên không có trong phòng",
@@ -141,5 +144,6 @@
     "invalid-home-page-route": "Đường dẫn trang chủ không hợp lệ",
     "invalid-session": "Không đúng session",
     "invalid-session-text": "Có vẻ như phiên đăng nhập của bạn đã không còn hoạt động nữa, hoặc không còn đúng với thông tin trên máy chủ. Vui lòng tải lại trang này",
-    "no-topics-selected": "Không có chủ đề nào đang được chọn!"
+    "no-topics-selected": "Không có chủ đề nào đang được chọn!",
+    "cant-move-to-same-topic": "Can't move post to same topic!"
 }

@@ -10,6 +10,8 @@ var socketTopics = require('../topics');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
 var social = require('../../social');
+var user = require('../../user');
+
 
 module.exports = function (SocketPosts) {
 	SocketPosts.loadPostTools = function (socket, data, callback) {
@@ -20,10 +22,16 @@ module.exports = function (SocketPosts) {
 			function (next) {
 				async.parallel({
 					posts: function (next) {
-						posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid'], next);
+						posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid', 'ip'], next);
 					},
-					isAdminOrMod: function (next) {
-						privileges.categories.isAdminOrMod(data.cid, socket.uid, next);
+					isAdmin: function (next) {
+						user.isAdministrator(socket.uid, next);
+					},
+					isGlobalMod: function (next) {
+						user.isGlobalModerator(socket.uid, next);
+					},
+					isModerator: function (next) {
+						user.isModerator(socket.uid, data.cid, next);
 					},
 					canEdit: function (next) {
 						privileges.posts.canEdit(data.pid, socket.uid, next);
@@ -43,6 +51,7 @@ module.exports = function (SocketPosts) {
 					postSharing: function (next) {
 						social.getActivePostSharing(next);
 					},
+					history: async.apply(posts.diffs.exists, data.pid),
 				}, next);
 			},
 			function (results, next) {
@@ -54,7 +63,13 @@ module.exports = function (SocketPosts) {
 				results.posts.display_delete_tools = results.canDelete.flag;
 				results.posts.display_flag_tools = socket.uid && !results.posts.selfPost && results.canFlag.flag;
 				results.posts.display_moderator_tools = results.posts.display_edit_tools || results.posts.display_delete_tools;
-				results.posts.display_move_tools = results.isAdminOrMod;
+				results.posts.display_move_tools = results.isAdmin || results.isModerator;
+				results.posts.display_ip_ban = (results.isAdmin || results.isGlobalMod) && !results.posts.selfPost;
+				results.posts.display_history = results.history;
+
+				if (!results.isAdmin && !results.isGlobalMod && !results.isModerator) {
+					results.posts.ip = undefined;
+				}
 				next(null, results);
 			},
 		], callback);

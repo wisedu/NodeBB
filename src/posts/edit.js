@@ -5,6 +5,7 @@ var validator = require('validator');
 var _ = require('lodash');
 
 var db = require('../database');
+var meta = require('../meta');
 var topics = require('../topics');
 var user = require('../user');
 var privileges = require('../privileges');
@@ -20,6 +21,7 @@ module.exports = function (Posts) {
 	});
 
 	Posts.edit = function (data, callback) {
+		var oldContent;	// for diffing purposes
 		var postData;
 		var results;
 
@@ -39,6 +41,7 @@ module.exports = function (Posts) {
 				}
 
 				postData = _postData;
+				oldContent = postData.content;
 				postData.content = data.content;
 				postData.edited = Date.now();
 				postData.editor = data.uid;
@@ -62,6 +65,13 @@ module.exports = function (Posts) {
 			function (_results, next) {
 				results = _results;
 				Posts.setPostFields(data.pid, postData, next);
+			},
+			function (next) {
+				if (parseInt(meta.config.enablePostHistory || 1, 10) !== 1) {
+					return setImmediate(next);
+				}
+
+				Posts.diffs.save(data.pid, oldContent, data.content, next);
 			},
 			function (next) {
 				postData.cid = results.topic.cid;

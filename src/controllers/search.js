@@ -11,15 +11,14 @@ var categories = require('../categories');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 
-
-var searchController = {};
+var searchController = module.exports;
 
 searchController.search = function (req, res, next) {
 	if (!plugins.hasListeners('filter:search.query')) {
 		return next();
 	}
 
-	if (!req.user && parseInt(meta.config.allowGuestSearching, 10) !== 1) {
+	if (!req.loggedIn && parseInt(meta.config.allowGuestSearching, 10) !== 1) {
 		return helpers.notAllowed(req, res);
 	}
 
@@ -31,6 +30,7 @@ searchController.search = function (req, res, next) {
 	var data = {
 		query: req.query.term,
 		searchIn: req.query.in || 'posts',
+		matchWords: req.query.matchWords || 'all',
 		postedBy: req.query.by,
 		categories: req.query.categories,
 		searchChildren: req.query.searchChildren,
@@ -78,5 +78,3 @@ searchController.search = function (req, res, next) {
 		res.render('search', searchData);
 	});
 };
-
-module.exports = searchController;

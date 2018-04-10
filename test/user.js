@@ -71,7 +71,7 @@ describe('User', function () {
 
 		it('should error with invalid password', function (done) {
 			User.create({ username: 'test', password: '1' }, function (err) {
-				assert.equal(err.message, '[[user:change_password_error_length]]');
+				assert.equal(err.message, '[[reset_password:password_too_short]]');
 				done();
 			});
 		});
@@ -1433,7 +1433,7 @@ describe('User', function () {
 				username: 'rejectme',
 				password: '123456',
 				'password-confirm': '123456',
-				email: '<script>alert("ok");<script>reject@me.com',
+				email: '<script>alert("ok")<script>reject@me.com',
 			}, function (err) {
 				assert.ifError(err);
 				helpers.loginUser('admin', '123456', function (err, jar) {
@@ -1441,7 +1441,7 @@ describe('User', function () {
 					request(nconf.get('url') + '/api/admin/manage/registration', { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(body.users[0].username, 'rejectme');
-						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;);&lt;script&gt;reject@me.com');
+						assert.equal(body.users[0].email, '&lt;script&gt;alert(&quot;ok&quot;)&lt;script&gt;reject@me.com');
 						done();
 					});
 				});

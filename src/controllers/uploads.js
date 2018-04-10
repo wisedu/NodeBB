@@ -73,6 +73,9 @@ function uploadAsImage(req, uploadedFile, callback) {
 
 			resizeImage(fileObj, next);
 		},
+		function (fileObj, next) {
+			next(null, { url: fileObj.url });
+		},
 	], callback);
 }
 
@@ -89,6 +92,9 @@ function uploadAsFile(req, uploadedFile, callback) {
 				return next(new Error('[[error:uploads-are-disabled]]'));
 			}
 			uploadsController.uploadFile(req.uid, uploadedFile, next);
+		},
+		function (fileObj, next) {
+			next(null, { url: fileObj.url });
 		},
 	], callback);
 }
@@ -112,6 +118,7 @@ function resizeImage(fileObj, callback) {
 				target: path.join(dirname, basename + '-resized' + extname),
 				extension: extname,
 				width: parseInt(meta.config.maximumImageWidth, 10) || 760,
+				quality: parseInt(meta.config.resizeImageQuality, 10) || 60,
 			}, next);
 		},
 		function (next) {

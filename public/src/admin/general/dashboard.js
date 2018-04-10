@@ -8,7 +8,6 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 		graphs: false,
 	};
 	var	isMobile = false;
-	var	isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 	var	graphData = {
 		rooms: {},
 		traffic: {},
@@ -42,42 +41,6 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function (releases) {
-			// Re-sort the releases, as they do not follow Semver (wrt pre-releases)
-			releases = releases.sort(function (a, b) {
-				a = a.name.replace(/^v/, '');
-				b = b.name.replace(/^v/, '');
-				return semver.lt(a, b) ? 1 : -1;
-			}).filter(function (version) {
-				return !isPrerelease.test(version.name);	// filter out automated prerelease versions
-			});
-
-			var	version = $('#version').html();
-			var latestVersion = releases[0].name.slice(1);
-			var checkEl = $('.version-check');
-			var text;
-
-			// Alter box colour accordingly
-			if (semver.eq(latestVersion, version)) {
-				checkEl.removeClass('alert-info').addClass('alert-success');
-				text = '[[admin/general/dashboard:up-to-date]]';
-			} else if (semver.gt(latestVersion, version)) {
-				checkEl.removeClass('alert-info').addClass('alert-warning');
-				if (!isPrerelease.test(version)) {
-					text = '[[admin/general/dashboard:upgrade-available, ' + latestVersion + ']]';
-				} else {
-					text = '[[admin/general/dashboard:prerelease-upgrade-available, ' + latestVersion + ']]';
-				}
-			} else if (isPrerelease.test(version)) {
-				checkEl.removeClass('alert-info').addClass('alert-info');
-				text = '[[admin/general/dashboard:prerelease-warning]]';
-			}
-
-			translator.translate(text, function (text) {
-				checkEl.append(text);
-			});
-		});
-
 		$('[data-toggle="tooltip"]').tooltip();
 
 		setupRealtimeButton();
@@ -85,6 +48,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 			initiateDashboard();
 		});
+		setupFullscreen();
 	};
 
 	Admin.updateRoomUsage = function (err, data) {
@@ -237,6 +201,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 							},
 							type: 'linear',
 							position: 'left',
+							scaleLabel: {
+								display: true,
+								labelString: translations[0],
+							},
 						}, {
 							id: 'right-y-axis',
 							ticks: {
@@ -245,6 +213,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 							},
 							type: 'linear',
 							position: 'right',
+							scaleLabel: {
+								display: true,
+								labelString: translations[1],
+							},
 						}],
 					},
 					tooltips: {
@@ -523,6 +495,41 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator', 'benchpress'
 		intervals.graphs = setInterval(function () {
 			updateTrafficGraph(currentGraph.units, currentGraph.until, currentGraph.amount);
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
+	}
+
+	function setupFullscreen() {
+		var container = document.getElementById('analytics-traffic-container');
+		var $container = $(container);
+		var btn = $container.find('.fa-expand');
+		var fsMethod;
+		var exitMethod;
+
+		if (container.requestFullscreen) {
+			fsMethod = 'requestFullscreen';
+			exitMethod = 'exitFullscreen';
+		} else if (container.mozRequestFullScreen) {
+			fsMethod = 'mozRequestFullScreen';
+			exitMethod = 'mozCancelFullScreen';
+		} else if (container.webkitRequestFullscreen) {
+			fsMethod = 'webkitRequestFullscreen';
+			exitMethod = 'webkitCancelFullScreen';
+		} else if (container.msRequestFullscreen) {
+			fsMethod = 'msRequestFullscreen';
+			exitMethod = 'msCancelFullScreen';
+		}
+
+		if (fsMethod) {
+			btn.addClass('active');
+			btn.on('click', function () {
+				if ($container.hasClass('fullscreen')) {
+					document[exitMethod]();
+					$container.removeClass('fullscreen');
+				} else {
+					container[fsMethod]();
+					$container.addClass('fullscreen');
+				}
+			});
+		}
 	}
 
 	return Admin;

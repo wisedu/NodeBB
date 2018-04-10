@@ -18,7 +18,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 
 		inputEl.val('');
 		inputEl.removeAttr('data-mid');
-
+		messages.updateRemainingLength(inputEl.parent());
 		$(window).trigger('action:chat.sent', {
 			roomId: roomId,
 			message: msg,
@@ -32,6 +32,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 			}, function (err) {
 				if (err) {
 					inputEl.val(msg);
+					messages.updateRemainingLength(inputEl.parent());
 					if (err.message === '[[error:email-not-confirmed-chat]]') {
 						return app.showEmailConfirmWarning(err);
 					}
@@ -56,10 +57,17 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 				if (err) {
 					inputEl.val(msg);
 					inputEl.attr('data-mid', mid);
+					messages.updateRemainingLength(inputEl.parent());
 					return app.alertError(err.message);
 				}
 			});
 		}
+	};
+
+	messages.updateRemainingLength = function (parent) {
+		var element = parent.find('[component="chat/input"]');
+		parent.find('[component="chat/message/length"]').text(element.val().length);
+		parent.find('[component="chat/message/remaining"]').text(config.maximumChatMessageLength - element.val().length);
 	};
 
 	messages.appendChatMessage = function (chatContentEl, data) {
@@ -82,6 +90,10 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 		newMessage.find('.timeago').timeago();
 		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
 		messages.scrollToBottom(chatContentEl);
+
+		$(window).trigger('action:chat.received', {
+			messageEl: newMessage,
+		});
 	}
 
 
@@ -146,11 +158,22 @@ define('forum/chats/messages', ['components', 'sounds', 'translator', 'benchpres
 						return app.alertError(err.message);
 					}
 
-					components.get('chat/message', messageId).slideUp('slow', function () {
-						$(this).remove();
-					});
+					components.get('chat/message', messageId).toggleClass('deleted', true);
 				});
 			});
+		});
+	};
+
+	messages.restore = function (messageId, roomId) {
+		socket.emit('modules.chats.restore', {
+			messageId: messageId,
+			roomId: roomId,
+		}, function (err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			components.get('chat/message', messageId).toggleClass('deleted', false);
 		});
 	};
 

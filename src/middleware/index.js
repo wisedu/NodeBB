@@ -59,12 +59,12 @@ middleware.pageView = function (req, res, next) {
 
 	plugins.fireHook('action:middleware.pageView', { req: req });
 
-	if (req.user) {
-		user.updateLastOnlineTime(req.user.uid);
+	if (req.loggedIn) {
+		user.updateLastOnlineTime(req.uid);
 		if (req.path.startsWith('/api/users') || req.path.startsWith('/users')) {
-			user.updateOnlineUsers(req.user.uid, next);
+			user.updateOnlineUsers(req.uid, next);
 		} else {
-			user.updateOnlineUsers(req.user.uid);
+			user.updateOnlineUsers(req.uid);
 			next();
 		}
 	} else {
@@ -112,7 +112,7 @@ middleware.routeTouchIcon = function (req, res) {
 };
 
 middleware.privateTagListing = function (req, res, next) {
-	if (!req.user && parseInt(meta.config.privateTagListing, 10) === 1) {
+	if (!req.loggedIn && parseInt(meta.config.privateTagListing, 10) === 1) {
 		controllers.helpers.notAllowed(req, res);
 	} else {
 		next();
@@ -143,7 +143,7 @@ function expose(exposedField, method, field, req, res, next) {
 }
 
 middleware.privateUploads = function (req, res, next) {
-	if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
+	if (req.loggedIn || parseInt(meta.config.privateUploads, 10) !== 1) {
 		return next();
 	}
 	if (req.path.startsWith(nconf.get('relative_path') + '/assets/uploads/files')) {
@@ -211,7 +211,7 @@ middleware.templatesOnDemand = function (req, res, next) {
 	if (!filePath.endsWith('.js')) {
 		return next();
 	}
-
+	var tplPath = filePath.replace(/\.js$/, '.tpl');
 	if (workingCache[filePath]) {
 		workingCache[filePath].push(next);
 		return;
@@ -234,7 +234,7 @@ middleware.templatesOnDemand = function (req, res, next) {
 			}
 
 			workingCache[filePath] = [next];
-			fs.readFile(filePath.replace(/\.js$/, '.tpl'), 'utf8', cb);
+			fs.readFile(tplPath, 'utf8', cb);
 		},
 		function (source, cb) {
 			Benchpress.precompile({
@@ -243,6 +243,9 @@ middleware.templatesOnDemand = function (req, res, next) {
 			}, cb);
 		},
 		function (compiled, cb) {
+			if (!compiled) {
+				return cb(new Error('[[error:templatesOnDemand.compiled-template-empty, ' + tplPath + ']]'));
+			}
 			fs.writeFile(filePath, compiled, cb);
 		},
 	], function (err) {
