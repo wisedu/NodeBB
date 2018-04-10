@@ -39,11 +39,6 @@ function Strategy(options, verify) {
     }
 
     this._oauth2.getOAuthAccessToken = function(code, params, callback) {
-        var params = params || {};
-        var codeParam = (params.grant_type === 'refresh_token') ? 'refresh_token' : 'code';
-        params[codeParam] = code;
-
-        var post_data = qs.stringify(params);
         var post_headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
         };
@@ -58,7 +53,6 @@ function Strategy(options, verify) {
                 try {
                     results = JSON.parse(data);
                 } catch (e) {
-
                     results = qs.parse(data);
                 }
                 let access_token = results["access_token"];

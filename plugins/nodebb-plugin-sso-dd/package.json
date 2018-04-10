@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-sso-dd",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "NodeBB Plugin that allows users to login/register via their dd account.",
   "main": "library.js",
   "repository": {
@@ -18,6 +18,10 @@
   "author": {
     "name": "pmmsc",
     "email": "yanni_wen@pmmsc.org"
+  },
+  "nbbpm": {
+    "compatibility": "^1.0.1",
+    "index": false
   },
   "contributors": [
     {
