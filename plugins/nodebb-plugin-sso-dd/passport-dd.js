@@ -18,8 +18,6 @@ function Strategy(options, verify) {
     var authorizationURL = options.authorizationURL || 'https://oapi.dingtalk.com/sns/gettoken';
     options.authorizationURL = authorizationURL;
     options.tokenURL = options.tokenURL || 'https://oapi.dingtalk.com/sns/gettoken';
-    options.clientID = appid;
-    options.clientSecret = appsecret;
     options.scopeSeparator = options.scopeSeparator || ',';
     let persistentURL = options.persistentURL || 'https://oapi.dingtalk.com/sns/get_persistent_code';
     let snsTokenURL = options.persistentURL || 'https://oapi.dingtalk.com/sns/get_sns_token';

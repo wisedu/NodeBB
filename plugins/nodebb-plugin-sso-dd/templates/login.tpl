@@ -1,6 +1,31 @@
 <!-- IMPORT partials/breadcrumbs.tpl -->
-
-<div class="row">
+<style>
+	.ddlogin > div:first-child {
+		width: 100%;
+		text-align: center;
+	}
+	.ddlogin > div:last-child {
+		display: none;
+	}
+</style>
+<div class="row ddlogin">
+	<!-- IF alternate_logins -->
+	<div class="<!-- IF allowLocalLogin -->col-md-6<!-- ELSE -->col-md-12<!-- ENDIF allowLocalLogin -->">
+		<div class="alt-login-block">
+			<h4>请使用钉钉扫码登录</h4>
+			<p>使用钉钉扫码登录的用户可以在钉钉上收到帖子的回复通知</p>
+			<ul class="alt-logins">
+				<div id="login_container"></div>
+			</ul>
+		</div>
+		<button class="btn" style="float:left;border-color: grey;" onclick="$(this).closest('.row').toggleClass('ddlogin');$(this).hide()">使用账号登录</button>
+	</div>
+	<script>
+		if (window.ddScan) {
+			window.ddScan();
+		}
+	</script>
+	<!-- ENDIF alternate_logins -->
 	<!-- IF allowLocalLogin -->
 	<div class="<!-- IF alternate_logins -->col-md-6<!-- ELSE -->col-md-12<!-- ENDIF alternate_logins -->">
 		<div class="login-block">
@@ -48,20 +73,4 @@
 		</div>
 	</div>
 	<!-- ENDIF allowLocalLogin -->
-
-	<!-- IF alternate_logins -->
-	<div class="<!-- IF allowLocalLogin -->col-md-6<!-- ELSE -->col-md-12<!-- ENDIF allowLocalLogin -->">
-		<div class="alt-login-block">
-			<h4>[[login:alternative_logins]]</h4>
-			<ul class="alt-logins">
-				<div id="login_container"></div>
-			</ul>
-		</div>
-	</div>
-	<script>
-		if (window.ddScan) {
-			window.ddScan();
-		}
-	</script>
-	<!-- ENDIF alternate_logins -->
 </div>
