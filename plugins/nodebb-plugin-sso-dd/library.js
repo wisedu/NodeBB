@@ -19,13 +19,15 @@
         }
     });
 
-    var corpid = 'ding5b727efd1035c355';
+    const corpid = 'ding5b727efd1035c355';
+    const corpsecret = 'YIRR_BE9tQjSZUnACGO4dMnAnl14ZloX77mUvegFavnnCd2bx3WLAk9I--0aKrTB';
+    const agentid = '169933468';
 
     var getAccessToken = function () {
         return axios.get('https://oapi.dingtalk.com/gettoken', {
             params: {
                 corpid: corpid,
-                corpsecret: 'YIRR_BE9tQjSZUnACGO4dMnAnl14ZloX77mUvegFavnnCd2bx3WLAk9I--0aKrTB'
+                corpsecret: corpsecret
             }
         }).then(function ({ data }) {
             if (data.errcode === 0) {
@@ -94,7 +96,7 @@
                                     //7、发送消息
                                     axios.post(`https://oapi.dingtalk.com/message/send?access_token=${access_token}`, {
                                         touser: tousers.join('|'),
-                                        agentid: '169933468',
+                                        agentid: agentid,
                                         msgtype: "link",
                                         link: {
                                             title: `亲，${username}回复了论坛中的话题<${topicTitle}>`,
