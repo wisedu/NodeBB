@@ -291,10 +291,10 @@
                                 });
                                 console.log('@用户keys',JSON.stringify(keys))
                                 if (keys.length) {
-                                    notifyMessage(keys, `亲，${username}@了您，请及时查看话题<${topicTitle}>`);
+                                    notifyMessage(uids, `亲，${username}@了您，请及时查看话题<${topicTitle}>`);
                                 }
                                 console.log('普通uids',JSON.stringify(uids))
-                                notifyMessage(uids, `亲，${username}回复了论坛中的话题<${topicTitle}>`);
+                                notifyMessage(keys, `亲，${username}回复了论坛中的话题<${topicTitle}>`);
                             });
                         } else {
                             notifyMessage(keys, `亲，${username}回复了论坛中的话题<${topicTitle}>`);
