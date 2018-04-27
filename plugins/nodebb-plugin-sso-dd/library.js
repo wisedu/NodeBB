@@ -243,10 +243,12 @@
         let set = 'tid:' + tid + ':posts';
         let postContent = data.post.content;
         let atUsers = [];
-        postContent.replace(/(^@|@)([\S]*)?/g, function (u) {
-            atUsers.push(u.replace(/@/g, ''));
-            return '';
-        })
+        let m = postContent.match(/(^@|@)(\S*)/g);
+        if (m) {
+            atUsers = m.map(function(u){
+                return u.replace(/@/,'').replace(/@[^@]*$/,'');
+            });
+        }
         User.getUserField(uid, 'username', function (err, username) {
             //1、获取主题
             Topics.getTopicData(tid, function (err, topic) {
