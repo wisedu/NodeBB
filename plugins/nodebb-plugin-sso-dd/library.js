@@ -10,7 +10,16 @@
         Topics = module.parent.require('./topics'),
         Posts = module.parent.require('./posts'),
         qs = require('qs'),
-        axios = require('axios');
+        axios = require('axios')
+        request = require('request');
+
+    function doPost(api, data) {
+        var apiserver = "http://localhost:9900/v1/mobile";
+        request.post(apiserver + api).form(data).on("error", err => {
+            console.error(err)
+        })
+    }
+
 
     var constants = Object.freeze({
         'name': "DD",
@@ -73,6 +82,11 @@
                         db.setObjectField('ddid:uid', ddID, uid);
                         callback(null, {
                             uid: uid
+                        });
+                        //注册设计器用户
+                        doPost('/userCreate', {
+                            uid: uid,
+                            username: username
                         });
                     };
 
